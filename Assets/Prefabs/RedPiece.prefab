@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 8346240321300418137}
   - component: {fileID: 5755426764639358469}
   - component: {fileID: 8128550793943495719}
+  - component: {fileID: 2666600639188316235}
   m_Layer: 0
   m_Name: RedPiece
-  m_TagString: Untagged
+  m_TagString: Piece1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,6 +95,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2666600639188316235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509502904606741498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644efe1d31aef6e42b7af4ba1a7b0923, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsKingPiece: 0
+  m_Cone: {fileID: 4995696331827687878}
+  m_PositionX: 0
+  m_PositionY: 5
 --- !u!1 &4964397096630246839
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,6 +120,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8384790521827394157}
+  - component: {fileID: 1421539060}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -125,6 +143,25 @@ Transform:
   m_Father: {fileID: 8116842616957727354}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1421539060
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4964397096630246839}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e51e4164656c894595327e3733a256f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4995696331827687878
 GameObject:
   m_ObjectHideFlags: 0
@@ -138,14 +175,14 @@ GameObject:
   - component: {fileID: 5710046535139818612}
   - component: {fileID: 7490500559218264441}
   - component: {fileID: 4672776054752271267}
-  - component: {fileID: 1421539060}
-  m_Layer: 0
+  - component: {fileID: 15016810563427819}
+  m_Layer: 2
   m_Name: Cone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9052032526995917128
 Transform:
   m_ObjectHideFlags: 0
@@ -416,7 +453,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!95 &1421539060
+--- !u!95 &15016810563427819
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -426,7 +463,7 @@ Animator:
   m_GameObject: {fileID: 4995696331827687878}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 83d6d10e1e0b7da40a5c796aa5b7cd37, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
