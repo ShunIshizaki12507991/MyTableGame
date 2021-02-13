@@ -16,7 +16,6 @@ public class CellArray
 /// </summary>
 public class GameController : MonoBehaviour
 {
-    private const float BOARD_INDENT = -2.5f;
     private enum CELLSTATUS{
         NONE = -1,
         WALL = 0,
@@ -44,6 +43,7 @@ public class GameController : MonoBehaviour
     };
     private HANDTURN m_CurrentTurn;
     private bool[,] m_Checked;
+    private Queue<string> m_CommandQueue;
 
     [UnityEngine.SerializeField]
     public bool m_IsDebug = false;
@@ -138,7 +138,7 @@ public class GameController : MonoBehaviour
                             switch (m_Phase)
                             {
                                 case TURNPHASE.SELECTPIECE:
-                                    if (Physics.Raycast(ray, out hit) && hit.collider.gameObject.CompareTag("Piece"))
+                                    if (Physics.Raycast(ray, out hit) && hit.collider.gameObject.CompareTag("Piece2"))
                                     {
                                         PieceController targetPiece = hit.collider.gameObject.GetComponent<PieceController>();
                                         ShowMovableCells(targetPiece);
@@ -153,7 +153,7 @@ public class GameController : MonoBehaviour
                                         Debug.Log(hit.collider.gameObject.tag);
                                         switch (hit.collider.gameObject.tag)
                                         {
-                                            case "Piece":
+                                            case "Piece2":
                                                 foreach (Cell cell in m_MovableCellList)
                                                 {
                                                     cell.HideMovableMark();
@@ -216,23 +216,97 @@ public class GameController : MonoBehaviour
                         break;
 
                     case HANDTURN.PLAYER2TURN:
-                        m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
-                        List<Cell> cells = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
-                        while (cells.Count == 0)
-                        {
-                            m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
-                            cells = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
+                        //if (!m_IsDebug) {
+                        //    m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
+                        //    List<Cell> cells = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
+                        //    while (cells.Count == 0)
+                        //    {
+                        //        m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
+                        //        cells = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
+                        //    }
+                        //    int randomSelectIndex = UnityEngine.Random.Range(0, cells.Count);
+                        //    MovePiece(cells[randomSelectIndex]);
+                        //    PieceController king = m_Player1Pieces[m_OwnKingIndex];
+                        //    if (CheckSurrounded(CELLSTATUS.PLAYER1, king.m_PositionX + 1, king.m_PositionY + 1)) {
+                        //        GameOver();
+                        //    }
+                        //    ClearChecker();
+                        //    m_Phase = TURNPHASE.SELECTPIECE;
+                        //    m_CurrentTurn = HANDTURN.PLAYER1TURN;
+                        //}
+                        if (!m_IsDebug) {
+                            switch (m_Phase)
+                            {
+                                case TURNPHASE.SELECTPIECE:
+                                    m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
+                                    m_MovableCellList = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
+                                    while (m_MovableCellList.Count == 0)
+                                    {
+                                        m_SelectedPieceIndex = UnityEngine.Random.Range(0, 6);
+                                        m_MovableCellList = GetMovableCells(m_Player2Pieces[m_SelectedPieceIndex]);
+                                    }
+                                    //m_SelectedPieceIndex = UnityEngine.Random.Range(0, m_MovableCellList.Count);
+                                    m_Phase = TURNPHASE.SELECTMOVEMENT;
+                                    break;
+
+                                case TURNPHASE.SELECTMOVEMENT:
+                                    int randomSelectIndex = UnityEngine.Random.Range(0, m_MovableCellList.Count);
+                                    MovePiece(m_MovableCellList[randomSelectIndex]);
+                                    PieceController king = m_Player1Pieces[m_OwnKingIndex];
+                                    if (CheckSurrounded(CELLSTATUS.PLAYER1, king.m_PositionX + 1, king.m_PositionY + 1))
+                                    {
+                                        GameOver();
+                                    }
+                                    ClearChecker();
+                                    m_MovableCellList.Clear();
+                                    m_Phase = TURNPHASE.SELECTPIECE;
+                                    m_CurrentTurn = HANDTURN.PLAYER1TURN;
+                                    break;
+                            }
                         }
-                        int randomSelectIndex = UnityEngine.Random.Range(0, cells.Count);
-                        MovePiece(cells[randomSelectIndex]);
-                        PieceController king = m_Player1Pieces[m_OwnKingIndex];
-                        if (CheckSurrounded(CELLSTATUS.PLAYER1, king.m_PositionX + 1, king.m_PositionY + 1)) {
-                            GameOver();
-                        }
-                        ClearChecker();
-                        m_Phase = TURNPHASE.SELECTPIECE;
-                        m_CurrentTurn = HANDTURN.PLAYER1TURN;
                         break;
+                }
+            }
+        }
+
+        if (Input.anyKeyDown)
+        {
+            if (!m_IsGameStarting) {
+                if (Input.GetKey("b"))
+                {
+                    Debug.Log("b");
+                    m_CommandQueue.Enqueue("b");
+                }
+                else if (Input.GetKey("d"))
+                {
+                    Debug.Log("d");
+                    m_CommandQueue.Enqueue("d");
+                }
+                else if (Input.GetKey("e"))
+                {
+                    Debug.Log("e");
+                    m_CommandQueue.Enqueue("e");
+                }
+                else if(Input.GetKey("g"))
+                {
+                    Debug.Log("g");
+                    m_CommandQueue.Enqueue("g");
+                }
+                else if(Input.GetKey("u"))
+                {
+                    Debug.Log("u");
+                    m_CommandQueue.Enqueue("u");
+                }
+                else if (Input.GetKey("return"))
+                {
+                    Debug.Log("Enter Command");
+                    string command = "";
+                    foreach (string c in m_CommandQueue)
+                    {
+                        command += c;
+                    }
+                    ConfirmCommand(command);
+                    m_CommandQueue.Clear();
                 }
             }
         }
@@ -268,6 +342,7 @@ public class GameController : MonoBehaviour
             { false, false, false, false, false, false }
         };
         m_Phase = TURNPHASE.NONE;
+        m_CommandQueue = new Queue<string>();
     }
 
     /// <summary>
@@ -282,7 +357,8 @@ public class GameController : MonoBehaviour
             GameObject.Find("Button").SetActive(false);
             GameObject dialog = (GameObject)Instantiate(m_DialogPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
             dialog.transform.SetParent(GameObject.Find("Canvas").GetComponent<Transform>(), false);
-            m_CurrentTurn = (HANDTURN)UnityEngine.Random.Range(1, 3);
+            //m_CurrentTurn = (HANDTURN)UnityEngine.Random.Range(1, 3);
+            m_CurrentTurn = (HANDTURN)2;
             dialog.GetComponent<GameStartDialogContoller>().SetDialogMessage((int)m_CurrentTurn);
             m_OpponentKingIndex = UnityEngine.Random.Range(0, 6);
             if (m_IsDebug) {
@@ -412,7 +488,7 @@ public class GameController : MonoBehaviour
     private void MovePiece(Cell targetCell)
     {
         Vector3 startPos;
-        Vector3 targetPos = targetCell.transform.position;
+        Vector3 targetPos = targetCell.transform.localPosition;
         float delX, delY;
         PieceController targetPiece;
         switch (m_CurrentTurn)
@@ -429,13 +505,14 @@ public class GameController : MonoBehaviour
             default:
                 return;
         }
-        startPos = targetPiece.transform.position;
+        startPos = targetPiece.transform.localPosition;
         delX = targetPos.x - startPos.x;
         delY = targetPos.y - startPos.y;
         targetPiece.transform.Translate(delX, delY, 0.0f);
         m_BoardStatus[targetPiece.m_PositionY + 1, targetPiece.m_PositionX + 1] = CELLSTATUS.NONE;
         targetPiece.m_PositionX = targetCell.m_PositionX;
         targetPiece.m_PositionY = targetCell.m_PositionY;
+        Debug.Log(m_CurrentTurn + " (" + startPos.x + ", " + startPos.y + ") -> (" + targetPos.x + ", " + targetPos.y + ")");
     }
 
     /// <summary>
@@ -529,5 +606,23 @@ public class GameController : MonoBehaviour
                 break;
         }
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void ConfirmCommand(string commandString)
+    {
+        switch (commandString)
+        {
+            case "debug":
+                SwitchDebugMode();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void SwitchDebugMode()
+    {
+        m_IsDebug = !m_IsDebug;
     }
 }
