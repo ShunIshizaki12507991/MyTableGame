@@ -4810,6 +4810,8 @@ MonoBehaviour:
     - {fileID: 378833653}
   m_DialogPrefab: {fileID: 5104306709760438081, guid: fbe3ea23cd01cb7429d2cf4dea6a0d37,
     type: 3}
+  m_ResultDialogPrefab: {fileID: 2233261080189662926, guid: 3736f1935a071bc41afee371e34a08f9,
+    type: 3}
 --- !u!1001 &1346169079
 PrefabInstance:
   m_ObjectHideFlags: 0
